@@ -1,8 +1,19 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const session = require('express-session');
 var user = require('./routes/userController');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
 var port = 3000;
+
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+app.use(cookieParser(''));
 // Configurations
 global.CONFIGURATIONS = {
   dbHost: 'localhost',
