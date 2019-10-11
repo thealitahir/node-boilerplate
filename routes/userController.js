@@ -3,13 +3,15 @@ var router = express.Router();
 var UserModel = require('../models/user');
 const nodemailer = require('nodemailer');
 var http = require('https');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
 
-router.get('/login', function(req, res) {
+router.get('/login', function (req, res) {
   console.log('in login');
   console.log(req.body);
   UserModel.findOne(
     { email: req.body.email, password: req.body.password },
-    function(err, user) {
+    function (err, user) {
       if (!err) {
         res.send({ status: true, message: 'User found', data: user });
       } else {
@@ -19,7 +21,7 @@ router.get('/login', function(req, res) {
   );
 });
 
-router.post('/register', function(req, res) {
+router.post('/register', function (req, res) {
   console.log('in register');
   console.log(req.body);
   var newUser = new UserModel();
@@ -45,8 +47,16 @@ router.post('/forgetPassword', async (req, res) => {
   console.log('in forget password');
   var user = req.body;
   console.log(user);
+  const msg = {
+    to: user.email,
+    from: 'ali.techqalandars@gmail.com',
+    subject: 'Sending with Twilio SendGrid is Fun',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+  };
+  sgMail.send(msg);
   //let testAccount = await nodemailer.createTestAccount();
-  let transporter = nodemailer.createTransport({
+  /* let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'ali.techqalandars@gmail.com', // generated ethereal user
@@ -74,7 +84,7 @@ router.post('/forgetPassword', async (req, res) => {
       }
     });
   });
-  console.log(info);
+  console.log(info); */
 });
 
 router.post('/asycAwaitExample', (req, res) => {
@@ -89,13 +99,13 @@ router.post('/asycAwaitExample', (req, res) => {
     jsonData.usertype,
     jsonData.auth_key,
     '',
-    async function(err, status) {
+    async function (err, status) {
       if (status) {
         console.log('Get /get_all_combined_transcriptions Call');
         const doctor_transcriptions = await new Promise((resolve, reject) => {
           Doctor_Transcribtions.find({ ...searchQuery, is_active: 'true' })
             .sort({ _id: -1 })
-            .exec(function(err, doctorTranscribtions) {
+            .exec(function (err, doctorTranscribtions) {
               if (err) {
                 res.send({
                   status: 500,
@@ -111,7 +121,7 @@ router.post('/asycAwaitExample', (req, res) => {
         const audio_transcriptions = await new Promise((resolve, reject) => {
           Audio_Transcribtions.find({ ...searchQuery, is_active: 'true' })
             .sort({ _id: -1 })
-            .exec(function(err, audioTranscribtions) {
+            .exec(function (err, audioTranscribtions) {
               if (err) {
                 res.send({
                   status: 500,
