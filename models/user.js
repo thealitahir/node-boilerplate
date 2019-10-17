@@ -9,7 +9,8 @@ var UserSchema = new Schema({
     location: { type: String },
     image: { type: Schema.Types.Mixed },
     phoneNo: { type: String, required: true },
-    verification_code: { type: String, required: true }
+    verification_code: { type: String, required: true },
+    auth_key: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Users', UserSchema);

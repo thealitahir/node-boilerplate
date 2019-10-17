@@ -31,12 +31,19 @@ var uri =
   CONFIGURATIONS.dbPort +
   '/' +
   CONFIGURATIONS.db;
-mongoose.connect("mongodb+srv://thealitahir:testuser@cluster0-qbtub.azure.mongodb.net/test?retryWrites=true&w=majority");
+
+var opt = {
+  useNewUrlParser: true
+};
+mongoose.connect(
+  'mongodb+srv://thealitahir:testuser@cluster0-qbtub.azure.mongodb.net/test?retryWrites=true&w=majority',
+  opt
+);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
+db.once('open', function() {
   console.log('DB CONNECTED');
-  var server = app.listen(port, '0.0.0.0', function () {
+  var server = app.listen(port, '0.0.0.0', function() {
     console.log('Server started on port :' + port);
   });
   io = require('socket.io').listen(server);
