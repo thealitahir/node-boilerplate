@@ -8,8 +8,8 @@ var UserSchema = new Schema({
     email: { type: String, required: true },
     location: { type: String },
     image: { type: Schema.Types.Mixed },
-    phoneNo: { type: String, required: true }
-
+    phoneNo: { type: String, required: true },
+    verification_code: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Users', UserSchema);

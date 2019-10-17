@@ -116,47 +116,104 @@ router.post('/register', async (req, res) => {
 router.post('/forgetPassword', async (req, res) => {
   console.log('in forget password');
   var user = req.body;
+  var code = generateRandomCode();
   console.log(user);
   const msg = {
     to: user.email,
     from: 'ali.techqalandars@gmail.com',
-    subject: 'Sending with Twilio SendGrid is Fun',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    subject: 'Verification Code - Classified App',
+    text: 'Password Reset Code' + code
+    // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   };
-  sgMail.send(msg);
-  //let testAccount = await nodemailer.createTestAccount();
-  /* let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'ali.techqalandars@gmail.com', // generated ethereal user
-      pass: 'techqalandars1234' // generated ethereal password
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
+  const user_data = await new Promise((resolve, reject) => {
+    UserModel.findOne(
+      { email: user.email },
+      function (err, user) {
+        if (!err) {
+          resolve(user);
+        } else {
+          reject(err);
+        }
+      }
+    );
   });
-  var mail_options = {
-    from: '"Fred Foo 👻" <ali.techqalandars@gmail.com>', // sender address
-    to: user.email, // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hello world?', // plain text body
-    html: '<b>Hello world?</b>' // html body
-  };
-  let info = await new Promise((resolve, reject) => {
-    transporter.sendMail(mail_options, (err, response) => {
-      if (err) {
-        res.send({ status: 500, message: 'Unable to send email.' });
-        reject(err);
+  if (!user_data) {
+    res.send({ status: false, message: 'No user with this email is registered', data: {} });
+  } else {
+    const updated_user = await new Promise((resolve, reject) => {
+      UserModel.findOneAndUpdate({ email: user.email }, {
+        $set: {
+          verification_code: code
+        }
+      }, { new: true }, (error, user) => {
+        if (!error) {
+          resolve(user);
+        } else {
+          reject(error);
+        }
+      });
+    });
+    if (!updated_user) {
+      res.send({ status: false, message: 'Unable to update verification code', data: {} })
+    }
+    else {
+      const code_confirmation = await new Promise((resolve, reject) => {
+        sgMail.send(msg, (err, response) => {
+          if (!err) {
+            resolve(response);
+          } else {
+            reject(err);
+          }
+        });
+      });
+      if (code_confirmation) {
+        res.send({
+          status: true,
+          message: 'Email sent and code saved',
+          data: updated_user
+        });
+      }
+      else {
+        res.send({
+          status: false,
+          message: 'unable to send email',
+          data: {}
+        });
+      }
+    }
+  }
+});
+
+router.post('/codeValidation', async (req, res) => {
+  var user = req.body;
+  const user_data = await new Promise((resolve, reject) => {
+    UserModel.findOne({ email: user.email, verification_code: user.code }, (err, record) => {
+      if (!err) {
+        resolve(record);
       } else {
-        res.send({ status: 200, message: 'Email Sent', data: response });
-        resolve(response);
+        reject(err);
       }
     });
   });
-  console.log(info); */
+  if (user_data) {
+    res.send({ status: true, message: "Code verified", data: user_data });
+  } else {
+    res.send({ status: false, message: "Unable to verify code", data: {} });
+  }
 });
 
+router.post('/updatePassword', async (req, res) => {
+  var user = req.body;
+  UserModel.findOneAndUpdate({ email: user.email });
+});
+
+router.get('/test', (req, res) => {
+  console.log("in test");
+  for (var i = 0; i < Math.pow(10, 90); i++) {
+
+  }
+  res.send("complete");
+});
 router.post('/asycAwaitExample', (req, res) => {
   var jsonData = req.body.details;
   var searchQuery =
@@ -226,5 +283,14 @@ function generateRandomString() {
   text += Date.now();
   return text;
 }
+
+function generateRandomCode() {
+  var text = "";
+  var possible = "1234567890";
+  for (var i = 0; i < 6; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 module.exports = router;
