@@ -124,7 +124,7 @@ router.post('/forgetPassword', async (req, res) => {
     to: user.email,
     from: 'ali.techqalandars@gmail.com',
     subject: 'Verification Code - Classified App',
-    text: 'Password Reset Code' + code
+    text: "http://rahilsURLforForgetPassword/" + code
     // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   };
   const user_data = await new Promise((resolve, reject) => {
@@ -206,7 +206,25 @@ router.post('/codeValidation', async (req, res) => {
 
 router.post('/updatePassword', async (req, res) => {
   var user = req.body;
-  UserModel.findOneAndUpdate({ email: user.email });
+  const updated_user = await new Promise((resolve, reject) => {
+    UserModel.findOneAndUpdate({ email: user.email, verification_code: user.code }, {
+      $set: {
+        password:user.new_password
+      }
+    },
+      { new: true }, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+      }
+    });
+  });
+  if (updated_user) {
+    res.send({ status: true, message: "Password updated successfuly", data: updated_user });
+  } else {
+    res.send({ status: false, message: "Invalid code", data: {} });
+  }
 });
 
 router.get('/test', (req, res) => {
