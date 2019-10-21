@@ -124,7 +124,7 @@ router.post('/forgetPassword', async (req, res) => {
     to: user.email,
     from: 'ali.techqalandars@gmail.com',
     subject: 'Verification Code - Classified App',
-    text: "http://rahilsURLforForgetPassword/" + code
+    text: `http://localhost:3001?token=${code}`
     // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   };
   const user_data = await new Promise((resolve, reject) => {
