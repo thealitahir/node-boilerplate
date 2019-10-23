@@ -6,10 +6,10 @@ var UserSchema = new Schema({
     lastName: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true },
-    location: { type: String },
+    address: { type: String },
     image: { type: Schema.Types.Mixed },
     phoneNo: { type: String, required: true },
-    verification_code: { type: String, required: true },
+    verification_code: { type: String},
     auth_key: { type: String, required: true }
 });
 

@@ -87,7 +87,7 @@ router.post('/register', async (req, res) => {
     newUser.email = req.body.email;
     newUser.password = req.body.password;
     newUser.phoneNo = req.body.phoneNo;
-    newUser.location = req.body.location;
+    newUser.address = req.body.address;
     newUser.auth_key = key;
     const new_user = await new Promise((resolve, reject) => {
       newUser.save((err, new_user) => {
