@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-var user = require('./routes/userController');
+const user = require('./routes/userController');
+const product = require('./routes/productController');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 var port = 3000;
@@ -24,6 +25,7 @@ global.CONFIGURATIONS = {
 };
 
 app.use('/user', user);
+app.use('/product',product)
 var uri =
   'mongodb://' +
   CONFIGURATIONS.dbHost +

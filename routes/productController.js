@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var ProductModel = require('../models/product');
 
-router.get('/getAllProducts', (req, res) => {
-  const products = new Promise((resolve, reject) => {
-    ProductController.find({}, (err, data) => {
+router.get('/getAllProducts', async (req, res) => {
+  const products = await new Promise((resolve, reject) => {
+    ProductModel.find({}, (err, data) => {
       if (!err) {
         resolve(data);
       } else {
@@ -23,8 +23,8 @@ router.get('/getAllProducts', (req, res) => {
   }
 });
 
-router.get('/getProductDetails/:id/:title', (req, res) => {
-  const products = new Promise((resolve, reject) => {
+router.get('/getProductDetails/:id', async(req, res) => {
+  const products = await new Promise((resolve, reject) => {
     ProductModel.findOne({ _id: req.params.id }, (err, data) => {
       if (!err) {
         resolve(data);
@@ -44,8 +44,8 @@ router.get('/getProductDetails/:id/:title', (req, res) => {
   }
 });
 
-router.get('/getCategoryProducts/:category_name', (req, res) => {
-  const products = new Promise((resolve, reject) => {
+router.get('/getCategoryProducts/:category_name', async(req, res) => {
+  const products = await new Promise((resolve, reject) => {
     ProductModel.find(
       { category_name: req.params.category_name },
       (err, data) => {
@@ -70,7 +70,7 @@ router.get('/getCategoryProducts/:category_name', (req, res) => {
 
 router.post('/addProduct', async (req, res) => {
   var product_details = req.body;
-  var product = new ProductModel();
+  var product = await new ProductModel();
 
   product.name = product_details.name;
   product.status = product_details.status;
@@ -80,11 +80,14 @@ router.post('/addProduct', async (req, res) => {
   product.category_name = product_details.category_name;
   product.brand_name = product_details.brand_name;
   product.brand_id = product_details.brand_id;
-  product.created_at = new Date.now();
-  product.status = new Date.now();
+  product.created_at = new Date();
+  product.updated_at = new Date();
+  product.status = product_details.status;;
+  product.title = product_details.title;
   product.description = product_details.description;
-  product.location.lat = product_details.lat;
-  product.location.long = product_details.long;
+  // product.location.lat = product_details.lat;
+  // product.location.long = product_details.long;
+  product.address = product_details.address
   product.price = product_details.price;
   product.condition = product_details.condition;
 
@@ -98,8 +101,10 @@ router.post('/addProduct', async (req, res) => {
     });
   });
   if (saved_product) {
-    res.send({ status: true, message: 'Product saved', data: products });
+    res.send({ status: true, message: 'Product saved', data: saved_product });
   } else {
     res.send({ status: false, message: 'Unable to save product', data: {} });
   }
 });
+
+module.exports = router;
