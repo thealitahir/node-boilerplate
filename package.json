@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.7.1",
+    "mongoose": "^5.7.5",
     "ngrok": "^3.2.5",
     "nodemon": "^1.19.2",
     "socket.io": "^2.2.0"
