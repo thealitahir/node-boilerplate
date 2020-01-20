@@ -280,8 +280,8 @@ router.post("/updatePassword", async (req, res) => {
 
 router.get("/test", (req, res) => {
   console.log("in test");
-  for (var i = 0; i < Math.pow(10, 90); i++) {}
-  res.send("complete");
+  /* for (var i = 0; i < Math.pow(10, 90); i++) {}
+  res.send("complete"); */
 });
 router.post("/asycAwaitExample", (req, res) => {
   var jsonData = req.body.details;
