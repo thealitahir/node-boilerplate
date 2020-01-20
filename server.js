@@ -8,7 +8,7 @@ const user = require('./routes/userController');
 const product = require('./routes/productController');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
-var port = 3000;
+var port = 3010;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
