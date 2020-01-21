@@ -254,7 +254,7 @@ router.post("/updatePassword", async (req, res) => {
       { email: user.email, password: user.password },
       {
         $set: {
-          password: user.new_password
+          password: user.password
         }
       },
       { new: true },
