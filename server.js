@@ -45,7 +45,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log('DB CONNECTED');
-  var server = app.listen(port, '0.0.0.0', function() {
+  var server = app.listen(process.env.PORT || 8080, process.env.HOST, function() {
     console.log('Server started on port :' + port);
   });
   io = require('socket.io').listen(server);
