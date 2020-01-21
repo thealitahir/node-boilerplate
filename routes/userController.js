@@ -251,7 +251,7 @@ router.post("/updatePassword", async (req, res) => {
   var user = req.body;
   const updated_user = await new Promise((resolve, reject) => {
     UserModel.findOneAndUpdate(
-      { email: user.email, password: user.password },
+      { email: user.email },
       {
         $set: {
           password: user.password
@@ -274,7 +274,7 @@ router.post("/updatePassword", async (req, res) => {
       data: updated_user
     });
   } else {
-    res.error({ status: false, message: "Invalid code", data: {} });
+    res.send({ status: false, message: "Invalid code", data: {} });
   }
 });
 
