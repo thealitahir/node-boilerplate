@@ -230,7 +230,7 @@ router.post("/codeValidation", async (req, res) => {
   var user = req.body;
   const user_data = await new Promise((resolve, reject) => {
     UserModel.findOne(
-      { pliep_id: user.pliep_id, verification_code: user.code },
+      { email: user.email, verification_code: user.code },
       (err, record) => {
         if (!err) {
           resolve(record);
@@ -280,8 +280,8 @@ router.post("/updatePassword", async (req, res) => {
 
 router.get("/test", (req, res) => {
   console.log("in test");
-  /* for (var i = 0; i < Math.pow(10, 90); i++) {}
-  res.send("complete"); */
+  /* for (var i = 0; i < Math.pow(10, 90); i++) {}*/
+  res.send("Hello from test"); 
 });
 router.post("/asycAwaitExample", (req, res) => {
   var jsonData = req.body.details;
