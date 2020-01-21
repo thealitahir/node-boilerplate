@@ -251,7 +251,7 @@ router.post("/updatePassword", async (req, res) => {
   var user = req.body;
   const updated_user = await new Promise((resolve, reject) => {
     UserModel.findOneAndUpdate(
-      { pliep_id: user.pliep_id, verification_code: user.code },
+      { email: user.email, verification_code: user.code },
       {
         $set: {
           password: user.new_password
