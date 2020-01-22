@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var UserModel = require("../models/user");
+var UserModel = require("../Models/user");
 const nodemailer = require("nodemailer");
 var http = require("https");
 const sgMail = require("@sendgrid/mail");
@@ -14,7 +14,7 @@ router.post("/login", async (req, res) => {
   const user = await new Promise((resolve, reject) => {
     UserModel.findOne(
       { pliep_id: req.body.pliep_id, password: req.body.password },
-      function(err, user) {
+      function (err, user) {
         if (!err) {
           resolve(user);
           //res.send({ status: true, message: 'User found', data: user });
@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
           }
         },
         { new: true },
-        function(error, auth_user) {
+        function (error, auth_user) {
           if (!error) {
             resolve(auth_user);
           } else {
@@ -160,7 +160,7 @@ router.post("/forgetPassword", async (req, res) => {
     // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   };
   const user_data = await new Promise((resolve, reject) => {
-    UserModel.findOne({ pliep_id: user.pliep_id }, function(err, user) {
+    UserModel.findOne({ pliep_id: user.pliep_id }, function (err, user) {
       if (!err) {
         resolve(user);
       } else {
@@ -281,7 +281,7 @@ router.post("/updatePassword", async (req, res) => {
 router.get("/test", (req, res) => {
   console.log("in test");
   /* for (var i = 0; i < Math.pow(10, 90); i++) {}*/
-  res.send("Hello from test"); 
+  res.send("Hello from test");
 });
 router.post("/asycAwaitExample", (req, res) => {
   var jsonData = req.body.details;
@@ -295,13 +295,13 @@ router.post("/asycAwaitExample", (req, res) => {
     jsonData.usertype,
     jsonData.auth_key,
     "",
-    async function(err, status) {
+    async function (err, status) {
       if (status) {
         console.log("Get /get_all_combined_transcriptions Call");
         const doctor_transcriptions = await new Promise((resolve, reject) => {
           Doctor_Transcribtions.find({ ...searchQuery, is_active: "true" })
             .sort({ _id: -1 })
-            .exec(function(err, doctorTranscribtions) {
+            .exec(function (err, doctorTranscribtions) {
               if (err) {
                 res.send({
                   status: 500,
@@ -317,7 +317,7 @@ router.post("/asycAwaitExample", (req, res) => {
         const audio_transcriptions = await new Promise((resolve, reject) => {
           Audio_Transcribtions.find({ ...searchQuery, is_active: "true" })
             .sort({ _id: -1 })
-            .exec(function(err, audioTranscribtions) {
+            .exec(function (err, audioTranscribtions) {
               if (err) {
                 res.send({
                   status: 500,
@@ -365,15 +365,15 @@ function generateRandomCode() {
 function randomAlphaNumericString(length) {
   var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   var result = "";
-  for (var i = length; i > 0; --i){
+  for (var i = length; i > 0; --i) {
     result += chars[Math.floor(Math.random() * chars.length)];
   }
-  UserModel.findOne({pliep_id:result},(err,data) =>{
+  UserModel.findOne({ pliep_id: result }, (err, data) => {
     console.log(data);
-    if(!err && data){
+    if (!err && data) {
       randomAlphaNumericString(10)
     }
-    else{
+    else {
       return result;
     }
   });
