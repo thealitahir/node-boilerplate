@@ -28,7 +28,8 @@ router.post("/login", async (req, res) => {
   console.log(user);
 
   if (!user) {
-    res.send({ status: false, message: "Invalid Credentials", data: {} });
+    console.log("returning error");
+    res.json({ status: false, message: "Invalid Credentials", data: {} });
   } else {
     var key = generateRandomString();
     const updated_user = await new Promise((resolve, reject) => {
@@ -51,13 +52,13 @@ router.post("/login", async (req, res) => {
     });
     console.log(updated_user);
     if (updated_user) {
-      res.send({
+      res.status(200).send({
         status: true,
         message: "User login successful",
         data: updated_user
       });
     } else {
-      res.send({ status: false, message: "User login failed", data: {} });
+      res.status(500).send({ status: false, message: "Unable to save auth token", data: {} });
     }
   }
 });
