@@ -25,11 +25,12 @@ router.post("/login", async (req, res) => {
       }
     );
   });
-  console.log(user);
 
   if (!user) {
     console.log("returning error");
-    res.json({ status: false, message: "Invalid Credentials", data: {} });
+    res
+      .status(401)
+      .send({ status: false, message: "Invalid Credentials", data: {} });
   } else {
     var key = generateRandomString();
     const updated_user = await new Promise((resolve, reject) => {
@@ -58,7 +59,11 @@ router.post("/login", async (req, res) => {
         data: updated_user
       });
     } else {
-      res.status(500).send({ status: false, message: "Unable to save auth token", data: {} });
+      res.status(401).send({
+        status: false,
+        message: "Unable to save auth token",
+        data: {}
+      });
     }
   }
 });
@@ -80,7 +85,9 @@ router.post("/register", async (req, res) => {
   console.log(unique_user);
 
   if (unique_user) {
-    res.send({ status: false, message: "Email already exists", data: {} });
+    res
+      .status(409)
+      .send({ status: false, message: "Email already exists", data: {} });
   } else {
     var pliep_id = randomAlphaNumericString(10);
     var key = generateRandomString();
@@ -124,20 +131,20 @@ router.post("/register", async (req, res) => {
         });
       });
       if (email_confirmation) {
-        res.send({
+        res.status(200).send({
           status: true,
           message: "User registered successfully",
           data: new_user
         });
       } else {
-        res.send({
+        res.status(401).send({
           status: false,
           message: "unable to send email",
           data: {}
         });
       }
     } else {
-      res.send({
+      res.status(401).send({
         status: false,
         message: "Unable to register user",
         data: {}
@@ -170,7 +177,7 @@ router.post("/forgetPassword", async (req, res) => {
     });
   });
   if (!user_data) {
-    res.send({
+    res.status(404).send({
       status: false,
       message: "No user with this email is registered",
       data: {}
@@ -195,7 +202,7 @@ router.post("/forgetPassword", async (req, res) => {
       );
     });
     if (!updated_user) {
-      res.send({
+      res.status(401).send({
         status: false,
         message: "Unable to update verification code",
         data: {}
@@ -211,13 +218,13 @@ router.post("/forgetPassword", async (req, res) => {
         });
       });
       if (code_confirmation) {
-        res.send({
+        res.status(200).send({
           status: true,
           message: "Email sent and code saved",
           data: updated_user
         });
       } else {
-        res.send({
+        res.status(401).send({
           status: false,
           message: "unable to send email",
           data: {}
@@ -242,9 +249,13 @@ router.post("/codeValidation", async (req, res) => {
     );
   });
   if (user_data) {
-    res.send({ status: true, message: "Code verified", data: user_data });
+    res
+      .status(200)
+      .send({ status: true, message: "Code verified", data: user_data });
   } else {
-    res.send({ status: false, message: "Unable to verify code", data: {} });
+    res
+      .status(401)
+      .send({ status: false, message: "Unable to verify code", data: {} });
   }
 });
 
@@ -269,20 +280,20 @@ router.post("/updatePassword", async (req, res) => {
     );
   });
   if (updated_user) {
-    res.send({
+    res.status(200).send({
       status: true,
       message: "Password updated successfuly",
       data: updated_user
     });
   } else {
-    res.send({ status: false, message: "Invalid code", data: {} });
+    res.status(401).send({ status: false, message: "Invalid code", data: {} });
   }
 });
 
 router.get("/test", (req, res) => {
   console.log("in test");
   /* for (var i = 0; i < Math.pow(10, 90); i++) {}*/
-  res.send("Hello from test"); 
+  res.send("Hello from test");
 });
 router.post("/asycAwaitExample", (req, res) => {
   var jsonData = req.body.details;
@@ -366,15 +377,14 @@ function generateRandomCode() {
 function randomAlphaNumericString(length) {
   var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   var result = "";
-  for (var i = length; i > 0; --i){
+  for (var i = length; i > 0; --i) {
     result += chars[Math.floor(Math.random() * chars.length)];
   }
-  UserModel.findOne({pliep_id:result},(err,data) =>{
+  UserModel.findOne({ pliep_id: result }, (err, data) => {
     console.log(data);
-    if(!err && data){
-      randomAlphaNumericString(10)
-    }
-    else{
+    if (!err && data) {
+      randomAlphaNumericString(10);
+    } else {
       return result;
     }
   });
