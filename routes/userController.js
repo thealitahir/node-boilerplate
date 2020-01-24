@@ -168,7 +168,7 @@ router.post("/forgetPassword", async (req, res) => {
     // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   };
   const user_data = await new Promise((resolve, reject) => {
-    UserModel.findOne({ pliep_id: user.pliep_id }, function(err, user) {
+    UserModel.findOne({ email: user.email }, function(err, user) {
       if (!err) {
         resolve(user);
       } else {
